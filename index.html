@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Meihua Forest Solver</title>
+  <meta name="description" content="Route planner for a robot that must collect two R2 KFS scrolls on a block field and exit, comparing breadth-first search with A*.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="forest" id="forest" aria-hidden="true"></div>
+
+  <header class="masthead">
+    <h1>Scroll Run</h1>
+    <p>A robot starts on block 2 facing south. It has to pick up exactly two of the four R2 KFS scrolls, avoid the Fake KFS, and leave by block 10 or 12. Breadth-first search finds the route with the fewest moves. A* finds the route that costs the fewest seconds. They rarely agree.</p>
+  </header>
+
+  <main class="layout">
+    <section class="field-col" aria-labelledby="field-h">
+      <h2 id="field-h" class="sr-only">Field</h2>
+
+      <div class="toolbar">
+        <div class="modes" role="radiogroup" aria-label="Marker to place">
+          <button type="button" class="mode is-on" role="radio" aria-checked="true" data-mode="fake">
+            <span class="mode-name">Fake KFS</span><span class="mode-count" id="count-fake">0/1</span>
+          </button>
+          <button type="button" class="mode" role="radio" aria-checked="false" data-mode="r2">
+            <span class="mode-name">R2 KFS</span><span class="mode-count" id="count-r2">0/4</span>
+          </button>
+        </div>
+        <div class="actions">
+          <button type="button" id="btn-random" class="ghost">Randomize</button>
+          <button type="button" id="btn-clear" class="ghost">Clear</button>
+          <button type="button" id="btn-solve" class="solve" disabled>Solve</button>
+        </div>
+      </div>
+
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+
+      <div class="stage">
+        <svg id="field" viewBox="0 0 10 10" role="group" aria-label="Field of twelve blocks. Click a block to place or clear a marker."></svg>
+      </div>
+
+      <div class="legend" aria-label="Block heights">
+        <span class="lv"><i class="sw" style="background:rgb(41,82,16)"></i>200 mm</span>
+        <span class="lv"><i class="sw" style="background:rgb(42,113,56)"></i>400 mm</span>
+        <span class="lv"><i class="sw" style="background:rgb(152,166,80)"></i>600 mm</span>
+        <span class="lv lv-north">North is toward the top of the screen</span>
+      </div>
+
+      <div class="playback" id="playback" hidden>
+        <div class="seg" role="radiogroup" aria-label="Route to animate">
+          <button type="button" role="radio" aria-checked="true" data-route="astar" class="is-on">A* route</button>
+          <button type="button" role="radio" aria-checked="false" data-route="bfs">BFS route</button>
+          <button type="button" role="radio" aria-checked="false" data-route="ucs">UCS route</button>
+        </div>
+        <button type="button" id="btn-play" class="ghost">Pause</button>
+        <button type="button" id="btn-replay" class="ghost">Replay</button>
+        <span class="held" id="held" aria-live="polite"></span>
+      </div>
+    </section>
+
+    <section class="results-col" id="results" aria-labelledby="results-h" aria-live="polite">
+      <h2 id="results-h" class="sr-only">Results</h2>
+      <div class="empty" id="empty">
+        <p class="empty-title">Nothing planned yet.</p>
+        <p>Place the Fake KFS and four R2 KFS on the field, or press Randomize, then Solve. The Fake KFS cannot go on blocks 1, 2 or 3.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>Step costs: climbing up 10 s, stepping down 7 s. Turning a quarter costs 5 s, a full reversal 10 s. The robot starts facing south.</p>
+  </footer>
+
+  <script src="algo.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
